@@ -1,7 +1,7 @@
 
 #======================================================================
-# Bare-bones Bazel BUILD file for Final Project
-# CPSC 326
+# Bare-bones Bazel BUILD file for MyPL
+# CPSC 321
 # Spring, 2022
 #======================================================================
 
@@ -22,10 +22,44 @@ java_library(
 # TEST SUITES:
 #----------------------------------------------------------------------
 
+java_test(
+    name = "code-generator-test",
+    srcs = ["tests/CodeGeneratorTest.java"], 
+    test_class = "CodeGeneratorTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
 
-# TODO: Add your test targets here. See prior homework build files for
-#       examples of creating test targets.
+java_test(
+    name = "vm-test",
+    srcs = ["tests/VMTest.java"], 
+    test_class = "VMTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
 
+java_test(
+    name = "static-checker-test",
+    srcs = ["tests/StaticCheckerTest.java"], 
+    test_class = "StaticCheckerTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
 
+java_test(
+    name = "ast-parser-test",
+    srcs = ["tests/ASTParserTest.java"], 
+    test_class = "ASTParserTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
 
+java_test(
+    name = "parser-test",
+    srcs = ["tests/ParserTest.java"], 
+    test_class = "ParserTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
 
+java_test(
+    name = "lexer-test",
+    srcs = ["tests/LexerTest.java"], 
+    test_class = "LexerTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
