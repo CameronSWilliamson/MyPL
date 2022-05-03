@@ -442,21 +442,6 @@ class VM {
         frame.operandStack.push(operand.toString());
       }
 
-      // Saves the start time in MS inside the stackframe.
-      else if (instr.opcode() == OpCode.TIMESTART) {
-        frame.startTime();
-      }
-
-      // Saves the end time in MS inside the stackframe.
-      else if (instr.opcode() == OpCode.TIMEEND) {
-        frame.endTime();
-      }
-
-      // Pushes the change in time to the stack
-      else if (instr.opcode() == OpCode.TIMEDELTA) {
-        frame.operandStack.push(frame.deltaTime());
-      }
-
       // ------------------------------------------------------------
       // Heap related
       // ------------------------------------------------------------
@@ -508,6 +493,30 @@ class VM {
 
       else if (instr.opcode() == OpCode.NOP) {
         // NOTHING HERE
+      }
+
+
+      // ------------------------------------------------------------
+      // Timing instructions
+      // ------------------------------------------------------------
+      
+      // Asks the frame to start timing.
+      else if (instr.opcode() == OpCode.TIMESTART) {
+        frame.startTime();
+      }
+
+      // Asks the frame to stop timing.
+      else if (instr.opcode() == OpCode.TIMEEND) {
+        frame.endTime();
+      }
+
+      // Pushes the elapsed time to the stack.
+      else if (instr.opcode() == OpCode.TIMEDELTA) {
+        int timeElapsed = frame.deltaTime();
+        if (timeElapsed < 0) {
+          error("Invalid time delta", frame);
+        }
+        frame.operandStack.push(frame.deltaTime());
       }
 
     }

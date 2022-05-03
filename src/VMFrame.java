@@ -85,7 +85,6 @@ public class VMFrame {
 
   /**
    * Stops the stack frame timer.
-   * 
    */
   public void endTime() {
     time_end = System.currentTimeMillis();

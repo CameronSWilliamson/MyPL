@@ -235,28 +235,6 @@ public class Lexer {
       column++;
       return new Token(TokenType.CHAR_VAL, lexeme, line, initialColumn);
     }
-    // if (isSymbol(peek(), '\'')) {
-    //   read();
-    //   column++;
-    //   int initialColumn = column;
-    //   int ch = read();
-    //   column++;
-    //   if (isSymbol(ch, '\'')) {
-    //     error("empty character", line, initialColumn);
-    //   } else if (isSymbol(ch, '\\')) {
-    //     ch = read();
-    //     column++;
-    //     read();
-    //     column++;
-    //     return new Token(TokenType.CHAR_VAL, "\\" + String.valueOf((char) ch), line, initialColumn);
-    //   }
-    //   char thirdChar = (char) read();
-    //   column++;
-    //   if (!isSymbol(thirdChar, '\'')) {
-    //     error("expecting ' found, '" + thirdChar + "'", line, ++initialColumn);
-    //   }
-    //   return new Token(TokenType.CHAR_VAL, String.valueOf((char) ch), line, initialColumn);
-    // }
 
     // Strings
     if (isSymbol(peek(), '"')) {

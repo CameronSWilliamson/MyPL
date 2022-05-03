@@ -51,8 +51,8 @@ public class StaticChecker implements Visitor {
 
   // return the build in function names
   private List<String> getBuiltinFunctions() {
-    return Arrays.asList("print", "read", "length", "get", "stoi",
-                         "stod", "itos", "itod", "dtos", "dtoi");
+    return Arrays.asList("print", "read", "length", "get", "stoi", "stod",
+      "itos", "itod", "dtos", "dtoi", "timestart", "timeend", "timedelta");
   }
 
   // check if given token is a valid function signature return type
@@ -453,6 +453,21 @@ public class StaticChecker implements Visitor {
       if (!currType.equals("double"))
         error("expecting double in dtoi", getFirstToken(e));
       currType = "int";
+    }
+    else if (funName.equals("timestart")) {
+      if (node.args.size() != 0)
+        error("timestart takes no arguments", node.funName);
+      currType = "void";
+    }
+    else if (funName.equals("timeend")) {
+      if (node.args.size() != 0)
+        error("timeend takes no arguments", node.funName);
+      currType = "void";
+    }
+    else if (funName.equals("timedelta")) {
+      if (node.args.size() != 0)
+        error("timedelta takes no arguments", node.funName);
+      currType = "double";
     }
   }
 

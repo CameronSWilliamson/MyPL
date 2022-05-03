@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 public class CodeGenerator implements Visitor {
@@ -279,6 +278,12 @@ public class CodeGenerator implements Visitor {
       currFrame.instructions.add(VMInstr.TOSTR());
     else if (node.funName.lexeme().equals("dtoi"))
       currFrame.instructions.add(VMInstr.TOINT());
+    else if (node.funName.lexeme().equals("timestart"))
+      currFrame.instructions.add(VMInstr.TIMESTART());
+    else if (node.funName.lexeme().equals("timeend"))
+      currFrame.instructions.add(VMInstr.TIMEEND());
+    else if (node.funName.lexeme().equals("timedelta"))
+      currFrame.instructions.add(VMInstr.TIMEDELTA());
 
     // user-defined functions
     else
@@ -339,7 +344,6 @@ public class CodeGenerator implements Visitor {
       varName = node.path.get(i).lexeme();
       currFrame.instructions.add(VMInstr.GETFLD(varName));
     }
-    // TODO: Handle pathing
   }
 
   public void visit(NegatedRValue node) throws MyPLException {

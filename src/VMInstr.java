@@ -11,7 +11,6 @@ import java.util.List;
 
 
 public class VMInstr {
-
   private OpCode opcode = null;
   private Object operand = null;
   private String comment = null;
@@ -214,7 +213,16 @@ public class VMInstr {
     return new VMInstr(OpCode.NOP);
   }
 
+  public static VMInstr TIMESTART() {
+    return new VMInstr(OpCode.TIMESTART);
+  }
 
-  
+  public static VMInstr TIMEEND() {
+    return new VMInstr(OpCode.TIMEEND);
+  }
+
+  public static VMInstr TIMEDELTA() {
+    return new VMInstr(OpCode.TIMEDELTA);
+  }
 }
   

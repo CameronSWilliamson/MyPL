@@ -48,10 +48,6 @@ public enum OpCode {
   TODBL,        // pop x, push x as a double
   TOSTR,        // pop x, push x.toString()
 
-  TIMESTART, // start timer
-  TIMEEND,   // end timer, push time in seconds
-  TIMEDELTA, // push delta between timers in seconds
-
   // heap 
   ALLOC,        // allocate obj w/ atts-list, push y (oid)
   FREE,         // pop x, deallocate object with oid x
@@ -61,6 +57,11 @@ public enum OpCode {
   // special
   DUP,          // pop x, push x, push x
   SWAP,         // pop x, pop y, push x, push y
-  NOP           // has no effect (for jumping over code segments)
+  NOP,           // has no effect (for jumping over code segments)
+
+  // Timing
+  TIMESTART, // start timer
+  TIMEEND,   // end timer, push time in seconds
+  TIMEDELTA, // push delta between timers in seconds
   ;
 }
