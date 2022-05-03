@@ -39,6 +39,10 @@ public class VMFrame {
   // the program counter (pc) for an active stack frame
   public int pc = 0;
 
+  // The start time in miliseconds
+  private long time_start;
+  // The end time in miliseconds
+  private long time_end;
 
   // basic constructor
   public VMFrame(String functionName, int argCount) {
@@ -72,4 +76,28 @@ public class VMFrame {
     return newFrame;
   }
   
+  /**
+   * Starts the stack frame timer.
+   */
+  public void startTime() {
+    time_start = System.currentTimeMillis();
+  }
+
+  /**
+   * Stops the stack frame timer.
+   * 
+   */
+  public void endTime() {
+    time_end = System.currentTimeMillis();
+  }
+
+  /**
+   * The time taken between the call to startTime() and the call to
+   * endTime() in milliseconds.
+   * 
+   * @returns The time elapsed in milliseconds.
+   */
+  public int deltaTime() {
+    return (int) (time_end - time_start);
+  }
 }

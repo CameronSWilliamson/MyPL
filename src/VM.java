@@ -442,6 +442,21 @@ class VM {
         frame.operandStack.push(operand.toString());
       }
 
+      // Saves the start time in MS inside the stackframe.
+      else if (instr.opcode() == OpCode.TIMESTART) {
+        frame.startTime();
+      }
+
+      // Saves the end time in MS inside the stackframe.
+      else if (instr.opcode() == OpCode.TIMEEND) {
+        frame.endTime();
+      }
+
+      // Pushes the change in time to the stack
+      else if (instr.opcode() == OpCode.TIMEDELTA) {
+        frame.operandStack.push(frame.deltaTime());
+      }
+
       // ------------------------------------------------------------
       // Heap related
       // ------------------------------------------------------------
