@@ -20,22 +20,7 @@ code: build
 vm: build
 	@bazel test --test_output=errors //:vm-test
 
-all: build
-	@bazel test --test_output=errors //...
+go: build
+	@bazel test --test_output=errors //:go-test
 
-hello: build
-	@bazel-bin/mypl --lex examples/hello.mypl
-
-pretty1: build
-	@bazel build //:mypl
-	@bazel-bin/mypl --print examples/print-1.mypl
-
-
-pretty2: build
-	@bazel build //:mypl
-	@bazel-bin/mypl --print examples/print-2.mypl
-
-
-pretty3: build
-	@bazel build //:mypl
-	@bazel-bin/mypl --print examples/print-3.mypl
+all: lexer parser ast static code vm go

@@ -63,3 +63,16 @@ java_test(
     test_class = "LexerTest",
     deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
 )
+
+java_test(
+    name = "go-test",
+    srcs = ["tests/GoVisitorTest.java"], 
+    test_class = "GoVisitorTest",
+    deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+)
+# java_test (
+#     name = "go-test",
+#     srcs = ["tests/GoVisitorTest.java"],,
+#     test_class = "GoVisitorTest",
+#     deps = ["lib/junit-4.13.2.jar", "lib/hamcrest-core-1.3.jar", ":mypl-lib"],
+# )

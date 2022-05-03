@@ -1,6 +1,3 @@
-import java.io.PrintStream;
-import java.lang.ProcessBuilder.Redirect.Type;
-
 /*
  * File: GoVisitor.java
  * Date: Spring 2022
@@ -8,20 +5,34 @@ import java.lang.ProcessBuilder.Redirect.Type;
  * Desc: Converting to GoLang
  */
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class GoVisitor implements Visitor {
-    
+
+    // output stream for printing
     private PrintStream out;
-
+    private ByteArrayOutputStream baos;
     private int indent = 0;
+    private final int INDENT_AMT = 1;
+    private boolean fmt = false;
 
-    private final int INDENT_AMT = 2;
-
-    public GoVisitor(PrintStream out) {
-        this.out = out;
+    public GoVisitor() {
+        baos = new ByteArrayOutputStream();
+        try {
+            out = new PrintStream(baos, true, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private String getIndent() {
-        return " ".repeat(indent);
+        return "\t".repeat(indent);
     }
 
     private void incIndent() {
@@ -32,6 +43,29 @@ public class GoVisitor implements Visitor {
         indent -= INDENT_AMT;
     }
 
+    private void print(String... s) {
+        for (String str : s)
+            out.print(str);
+    }
+
+    public String parse(Program node) throws MyPLException {
+        visit(node);
+        return imports() + baos.toString();
+    }
+
+    private String imports() {
+        // TODO: Write the logic for thsi function
+        StringBuilder importString = new StringBuilder("package main\n");
+        if (fmt) {
+            importString.append("import (");
+            importString.append("\n\t\"fmt\"");
+            importString.append("\n)\n");
+        }
+
+        return importString.toString();
+    }
+
+    @Override
     public void visit(Program node) throws MyPLException {
         for (TypeDecl d : node.tdecls)
             d.accept(this);
@@ -39,150 +73,150 @@ public class GoVisitor implements Visitor {
             d.accept(this);
     }
 
+    @Override
     public void visit(TypeDecl node) throws MyPLException {
-        out.print(getIndent() + "type " + node.typeName.lexeme() + " struct {\n");
-
-        incIndent();
-        for (VarDeclStmt d : node.vdecls)
-            d.accept(this);
-        decIndent();
-
-        out.print(getIndent() + "}");
+        // TODO Auto-generated method stub
     }
 
+    @Override
     public void visit(FunDecl node) throws MyPLException {
-        out.print(getIndent() + "func " + node.funName.lexeme() + "(");
-
-        incIndent();
-        for (FunParam param : node.params) {
-            out.print(param.paramName + " " + param.paramType);
-            if (node.params.indexOf(param) != node.params.size() - 1)
-                out.print(", ");
+        // TODO Auto-generated method stub
+        print(getIndent() + "func");
+        print(" " + node.funName.lexeme() + "(");
+        if (node.params.size() > 0) {
+            for (FunParam param : node.params.subList(0, node.params.size() - 1)) {
+                print(param.paramName.lexeme() + " " + param.paramType.lexeme() + ", ");
+            }
+            FunParam lastParam = node.params.get(node.params.size() - 1);
+            print(lastParam.paramName.lexeme() + " " + lastParam.paramType.lexeme());
         }
-
-        out.print(") ");
-
-        if (node.returnType.lexeme() != "void")
-            out.print(node.returnType.lexeme());
-
-        out.print(" {\n");
-
+        print(")");
+        if (!node.returnType.lexeme().equals("void"))
+            print(" " + node.returnType.lexeme());
+        print(" {\n");
         incIndent();
         for (Stmt stmt : node.stmts) {
+            out.print(getIndent());
             stmt.accept(this);
             out.print("\n");
         }
         decIndent();
-
-        out.print("}\n");
+        out.print(getIndent() + "}\n");
     }
 
+    @Override
     public void visit(VarDeclStmt node) throws MyPLException {
-        out.print(node.varName.lexeme() + " := ");
+        print(node.varName.lexeme() + " := ");
         node.expr.accept(this);
     }
 
+    @Override
     public void visit(AssignStmt node) throws MyPLException {
-        for (Token token : node.lvalue)
-            out.print(token.lexeme());
-        out.print(" = ");
+        for (Token token : node.lvalue.subList(0, node.lvalue.size() - 1)) {
+            print(token.lexeme() + ".");
+        }
+        print(node.lvalue.get(node.lvalue.size() - 1).lexeme() + " = ");
         node.expr.accept(this);
     }
 
+    @Override
     public void visit(CondStmt node) throws MyPLException {
-        out.print("if ");
-        basicElif(node.ifPart, node.elseStmts != null);
-        if (node.elifs != null) {
-            for (BasicIf elif : node.elifs) {
-                out.println(getIndent() + "elif ");
-                basicElif(elif, node.elseStmts != null);
-            }
-        }
-        if (node.elseStmts != null) {
-            out.print(getIndent() + "else {\n");
-            incIndent();
-            for (Stmt elseStmts: node.elseStmts) {
-                out.print(getIndent());
-                elseStmts.accept(this);
-                out.print("\n");
-            }
-            decIndent();
-            out.print(getIndent() + "}");
-        }
+        // TODO Auto-generated method stub
+
     }
 
-    private void basicElif(BasicIf node, boolean elseStmts) throws MyPLException {
-        node.cond.accept(this);
-        out.print(" {\n");
-        incIndent();
-        for (Stmt stmt: node.stmts) {
-            out.print(getIndent());
-            stmt.accept(this);
-            out.print("\n");
-        }
-        decIndent();
-        if(elseStmts) {
-            out.print(getIndent() + "}\n");
-        } else {
-            out.print(getIndent() + "}");
-        }
-    }
-
+    @Override
     public void visit(WhileStmt node) throws MyPLException {
-        out.print("for ");
-        node.cond.accept(this);
-        out.print(" {\n");
-        incIndent();
-        for (Stmt stmt: node.stmts) {
-            out.print(getIndent());
-            stmt.accept(this);
-            out.print("\n");
-        }
-        decIndent();
-        out.print(getIndent() + "}");
+        // TODO Auto-generated method stub
+
     }
+
+    @Override
     public void visit(ForStmt node) throws MyPLException {
+        // TODO Auto-generated method stub
+
     }
+
+    @Override
     public void visit(ReturnStmt node) throws MyPLException {
-        out.print("return");
+        // TODO Auto-generated method stub
+        print("return");
         if (node.expr != null) {
-            out.print(" ");
-            visit(node.expr);
+            print(" ");
+            node.expr.accept(this);
         }
     }
+
+    @Override
     public void visit(DeleteStmt node) throws MyPLException {
-        // Golang is garbage collected so this function does nothing.
+        // TODO Auto-generated method stub
+
     }
 
-    // statement and rvalue node
+    @Override
     public void visit(CallExpr node) throws MyPLException {
-        out.print(node.funName.lexeme());
-        out.print("(");
+        // TODO Auto-generated method stub
+        if (node.funName.lexeme().equals("print")) {
+            fmt = true;
+            print("fmt.Print(");
+        } else
+            print(node.funName.lexeme() + "(");
         if (node.args.size() > 0) {
-            for (Expr arg : node.args.subList(0, node.args.size() - 1)) {
-                visit(arg);
-                out.print(", ");
+            for (Expr expr : node.args.subList(0, node.args.size() - 1)) {
+                expr.accept(this);
+                print(", ");
             }
-            visit(node.args.get(node.args.size() - 1));
+            node.args.get(node.args.size() - 1).accept(this);
         }
-        out.print(")");
+        print(")");
     }
 
-    // rvalue nodes
-    public void visit(SimpleRValue node) throws MyPLException {}
-    public void visit(NewRValue node) throws MyPLException {
-        out.print(node.typeName.lexeme() + "{}");
+    @Override
+    public void visit(SimpleRValue node) throws MyPLException {
+        if (node.value.type() == TokenType.STRING_VAL)
+            out.print("\"" + node.value.lexeme() + "\"");
+        else if (node.value.type() == TokenType.CHAR_VAL)
+            out.print("'" + node.value.lexeme() + "'");
+        else
+            out.print(node.value.lexeme());
     }
-    public void visit(IDRValue node) throws MyPLException {}
+
+    @Override
+    public void visit(NewRValue node) throws MyPLException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visit(IDRValue node) throws MyPLException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void visit(NegatedRValue node) throws MyPLException {
         out.print("-");
-        visit(node.expr);
+        node.expr.accept(this);
     }
 
-    // expression node
-    public void visit(Expr node) throws MyPLException {}
+    @Override
+    public void visit(Expr node) throws MyPLException {
+        // TODO Auto-generated method stub
+        node.first.accept(this);
+        if (node.op != null) {
+            out.print(" " + node.op.lexeme() + " ");
+            node.rest.accept(this);
+        }
+    }
 
-    // terms
-    public void visit(SimpleTerm node) throws MyPLException {}
-    public void visit(ComplexTerm node) throws MyPLException {}
+    @Override
+    public void visit(SimpleTerm node) throws MyPLException {
+        node.rvalue.accept(this);
+    }
+
+    @Override
+    public void visit(ComplexTerm node) throws MyPLException {
+        node.expr.accept(this);
+    }
+
 }
