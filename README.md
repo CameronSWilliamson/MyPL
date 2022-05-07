@@ -2,14 +2,10 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/CameronSWilliamson/MyPL">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
 <h3 align="center">MyPL Language Compiler</h3>
 
   <p align="center">
-    project_description
+    Programming language built using a JVM-like interpreter. This language also has the ability to be transpiled to go to improve performance.
     <br />
     <a href="https://github.com/CameronSWilliamson/MyPL">View Demo</a>
     ·
@@ -31,23 +27,16 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
-### Built With
+## Tests
+
+This project was tested using both `GoVisitorTest.java` and using the files stored within `./examples`.
+
+## Built With
 
 * Java
 * [Bazel](https://bazel.build/)
@@ -97,4 +86,4 @@ Will run the source code file using the MyPL interpreter.
 
 ## Go Limitations
 
-- Dynamic typing is no longer allowed within typeclasses when converting to Go Code. This is due to a limitation in the `GoVisitor`. It can be improved, but most likely will not be before the due date of this assignment.
+- Type inferencing is no longer allowed within type declarations when converting to Go Code. This is due to a limitation in the `GoVisitor`. It can be improved, but most likely will not be before the due date of this assignment.
