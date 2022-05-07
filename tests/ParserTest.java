@@ -8,7 +8,6 @@
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -73,23 +72,7 @@ public class ParserTest {
     Parser parser = buildParser(s);
     parser.parse();
   }
-  
-  /* TODO: 
-  
-       (1). Add your own test cases below as you create your recursive
-            descent functions. By the end you should have a full suite
-            of positive test cases that "pass" the tests. 
-  
-       (2). Ensure your program (bazel-bin/mypl --parse) works for the
-            example file (examples/parser.txt). 
-  
-       (3). For the parser, the "negative" tests below are just as
-            important as the "positive" test cases. Like in (1), be
-            sure to add negative test cases as you build out your
-            parser. By the end you should also have a full set of
-            negative cases as well.
-  */
-  
+
   @Test
   public void testExpr() throws Exception {
     String s = buildString("fun void main() {",

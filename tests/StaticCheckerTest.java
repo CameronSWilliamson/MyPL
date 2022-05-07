@@ -8,7 +8,6 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.Ignore;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -1246,7 +1245,7 @@ public class StaticCheckerTest {
     assertTrue(typeInfo.types().contains("T2"));
     assertEquals(0, typeInfo.components("T1").size());
     assertEquals(3, typeInfo.components("T2").size());
-    List<String> components = new ArrayList(typeInfo.components("T2"));
+    List<String> components = new ArrayList<>(typeInfo.components("T2"));
     assertEquals("x", components.get(0));
     assertEquals("int", typeInfo.get("T2", "x"));
     assertEquals("y", components.get(1));
@@ -1267,7 +1266,7 @@ public class StaticCheckerTest {
     assertEquals(1, typeInfo.components("main").size());
     assertEquals("void", typeInfo.get("main", "return"));
     assertEquals(3, typeInfo.components("f").size());
-    List<String> components = new ArrayList(typeInfo.components("f"));
+    List<String> components = new ArrayList<>(typeInfo.components("f"));
     assertEquals("x", components.get(0));
     assertEquals("int", typeInfo.get("f", "x"));
     assertEquals("y", components.get(1));

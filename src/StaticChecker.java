@@ -8,7 +8,6 @@
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 // NOTE: Some of the following are filled in, some partly filled in,
@@ -65,7 +64,7 @@ public class StaticChecker implements Visitor {
 
   // helper to check if the given token is a valid parameter type
   private void checkParamType(Token typeToken) throws MyPLException {
-    if (typeToken.equals("void"))
+    if (typeToken.lexeme().equals("void"))
       error("'void' is an invalid parameter type", typeToken);
     else if (!getValidTypes().contains(typeToken.lexeme())) {
       String msg = "'" + typeToken.lexeme() + "' is an invalid return type";
@@ -276,7 +275,6 @@ public class StaticChecker implements Visitor {
       String name = path.get(i).lexeme();
       String componentType = typeInfo.get(typeName, name);
       if (componentType == null)
-        // System.out.println(name);
         error("\"" + typeName + "\" does not have a component named \"" + name + "\"", path.get(i));
       currType = componentType;
       typeName = componentType;

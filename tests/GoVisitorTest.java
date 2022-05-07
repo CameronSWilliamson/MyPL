@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,7 +9,6 @@ import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.ExcludeCategories;
 
 public class GoVisitorTest {
     private PrintStream stdout = System.out;
@@ -157,19 +157,330 @@ public class GoVisitorTest {
                 "}");
         assertEquals(expected, buildVisitor(s));
     }
+
+    @Test
+    public void readFunction() throws Exception {
+        String s = buildString("fun void main() {",
+                "  var x = read()",
+                "print(x)",
+                "}");
+        String expected = buildString("package main",
+                "import (",
+                "\t\"fmt\"",
+                "\t\"bufio\"",
+                "\t\"os\"",
+                ")",
+                "func main() {",
+                "\tx := read()",
+                "\tfmt.Print(x)",
+                "}",
+                "func read() string {",
+                "\treader := bufio.NewReader(os.Stdin)",
+                "\ttext, _ := reader.ReadString('\\n')",
+                "\treturn text",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void lengthFunction() throws Exception {
+        String s = buildString("fun void main() {",
+                "var x = \"hello\"",
+                "print(len(x))",
+                "}");
+        String expected = buildString("package main",
+                "import (",
+                "\t\"fmt\"",
+                ")",
+                "func main() {",
+                "\tx := \"hello\"",
+                "\tfmt.Print(len(x))",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void getFunction() throws Exception {
+        String s = buildString("fun void main() {",
+                "var x = \"hello\"",
+                "print(get(x, 0))",
+                "}");
+        String expected = buildString("package main",
+                "import (",
+                "\t\"fmt\"",
+                ")",
+                "func main() {",
+                "\tx := \"hello\"",
+                "\tfmt.Print(string(x[0]))",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void conversionFuncs() throws Exception {
+        String s = buildString("fun void main() {",
+                "var x = stoi(itos(1))",
+                "var y = stod(dtos(2))",
+                "}");
+        String expected = buildString("package main",
+                "import (",
+                "\t\"strconv\"",
+                ")",
+                "func main() {",
+                "\tx := stoi(strconv.Itoa(1))",
+                "\ty := stod(strconv.FormatFloat(2, 'f', -1, 64))",
+                "}",
+                "func stoi(s string) int {",
+                "\tnum, _ := strconv.Atoi(s)",
+                "\treturn num",
+                "}",
+                "func stod(s string) float64 {",
+                "\tnum, _ := strconv.ParseFloat(s, 64)",
+                "\treturn num",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void timerFuncs() throws Exception {
+        String s = buildString("fun void main() {",
+                "timestart()",
+                "timeend()",
+                "timedelta()",
+                "}");
+        String expected = buildString("package main",
+                "import (",
+                "\t\"time\"",
+                ")",
+                "func main() {",
+                "\tstart := time.Now()",
+                "\tend := time.Now()",
+                "\tend.Sub(start)",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
     // --------------------
     // If Statements
     // --------------------
+    @Test
+    public void basicIf() throws Exception {
+        String s = buildString("fun void main() {",
+                "if 1 == 1 {",
+                "var x = 1",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tif 1 == 1 {",
+                "\t\tx := 1",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void nestedIf() throws Exception {
+        String s = buildString("fun void main() {",
+                "if 1 == 1 {",
+                "if 1 == 1 {",
+                "var x = \"hi\"",
+                "}",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tif 1 == 1 {",
+                "\t\tif 1 == 1 {",
+                "\t\t\tx := \"hi\"",
+                "\t\t}",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void ifElif() throws Exception {
+        String s = buildString("fun void main() {",
+                "if 1 == 1 {",
+                "var x = 1",
+                "} elif 1 == 2 {",
+                "var y = 2",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tif 1 == 1 {",
+                "\t\tx := 1",
+                "\t} else if 1 == 2 {",
+                "\t\ty := 2",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void ifElseStatement() throws Exception {
+        String s = buildString("fun void main() {",
+                "if 1 == 1 {",
+                "var  x = 1",
+                "} else {",
+                "var y = 1",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tif 1 == 1 {",
+                "\t\tx := 1",
+                "\t} else {",
+                "\t\ty := 1",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void ifWithNot() throws Exception {
+        String s = buildString("fun void main() {",
+                "if not (1 == 1) {",
+                "var x = 1",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tif !(1 == 1) {",
+                "\t\tx := 1",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
 
     // --------------------
     // While Loops
     // --------------------
+    @Test
+    public void whileLoop() throws Exception {
+        String s = buildString("fun void main() {",
+                "var x = 1",
+                "while x < 10 {",
+                "x = x + 1",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tx := 1",
+                "\tfor x < 10 {",
+                "\t\tx = x + 1",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
 
     // --------------------
     // For Loops
     // --------------------
+    @Test
+    public void forLoop() throws Exception {
+        String s = buildString("fun void main() {",
+                "for x from 1 upto 10 {",
+                "var y = x",
+                "}",
+                "for x from 10 downto 1 {",
+                "var z = x",
+                "}",
+                "}");
+        String expected = buildString("package main",
+                "func main() {",
+                "\tfor x := 1; x < 10; x++ {",
+                "\t\ty := x",
+                "\t}",
+                "\tfor x := 10; x > 1; x-- {",
+                "\t\tz := x",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
 
     // --------------------
     // User Defined Types
     // --------------------
+    @Test
+    public void userDefinedTypeNoVals() throws Exception {
+        String s = buildString("type MyType{}", "fun void main() {",
+                "var x = new MyType",
+                "}");
+        String expected = buildString("package main",
+                "type MyType struct {",
+                "}",
+                "func main() {",
+                "\tx := makeMyType()",
+                "}",
+                "func makeMyType() MyType {",
+                "\treturn MyType{",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void userDefinedTypeVals() throws Exception {
+        String s = buildString("type MyType{",
+                "var int x = 1",
+                "var int y = 2",
+                "}",
+                "fun void main() {",
+                "var x = new MyType",
+                "}");
+        String expected = buildString("package main",
+                "type MyType struct {",
+                "\tx int",
+                "\ty int",
+                "}",
+                "func main() {",
+                "\tx := makeMyType()",
+                "}",
+                "func makeMyType() MyType {",
+                "\treturn MyType{",
+                "\t\tx: 1,",
+                "\t\ty: 2,",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
+
+    @Test
+    public void badTypeDeclaration() throws Exception {
+        String s = buildString("type T {",
+                "var x = 1",
+                "}");
+        try {
+            buildVisitor(s);
+            fail("Expected exception");
+        } catch (Exception e) {
+            assertEquals("GO_ERROR: Type name not set for variable x in type T", e.getMessage());
+        }
+    }
+
+    @Test
+    public void selfReferenceType() throws Exception {
+        String s = buildString("type T {",
+                "var T x = nil",
+                "}",
+                "fun void main() {",
+                "var x = new T",
+                "}");
+        String expected = buildString("package main",
+                "type T struct {",
+                "\tx *T",
+                "}",
+                "func main() {",
+                "\tx := makeT()",
+                "}",
+                "func makeT() *T {",
+                "\treturn &T{",
+                "\t\tx: nil,",
+                "\t}",
+                "}");
+        assertEquals(expected, buildVisitor(s));
+    }
 }

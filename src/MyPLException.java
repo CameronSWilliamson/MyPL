@@ -11,7 +11,8 @@ public class MyPLException extends Exception {
     LEXER_ERROR,
     PARSE_ERROR,
     STATIC_ERROR, 
-    VM_ERROR
+    VM_ERROR,
+    GO_ERROR
   };
 
   private String message;
@@ -46,6 +47,7 @@ public class MyPLException extends Exception {
     return new MyPLException(message, ErrorType.VM_ERROR);
   }
 
-
-  
+  public static MyPLException GOError(String message) {
+    return new MyPLException(message, ErrorType.GO_ERROR);
+  }
 }

@@ -240,7 +240,6 @@ public class PrintVisitor implements Visitor {
 
   // "hello world"
   public void visit(SimpleRValue node) throws MyPLException {
-    String buffer = "";
     if (node.value.type() == TokenType.STRING_VAL) {
       out.print("\"" + node.value.lexeme() + "\"");
     } else if (node.value.type() == TokenType.CHAR_VAL) {

@@ -112,9 +112,6 @@ public class ASTParser {
   // Recursive Descent Functions
   // ------------------------------------------------------------
 
-  // TODO: Add your recursive descent functions from HW-3
-  // and extend them to build up the AST
-
   /**
    * <program> ::= (<tdecl> | <fdecl>)*
    * 

@@ -109,7 +109,6 @@ public class Parser {
   //------------------------------------------------------------
 
 
-  /* TODO: Add the recursive descent functions below */
   private void tdecl() throws MyPLException {
     // <tdecl> ::= TYPE ID LBRACE <vdecls> RBRACE
     eat(TokenType.TYPE, "expecting 'type'");

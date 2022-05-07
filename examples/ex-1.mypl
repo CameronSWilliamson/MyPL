@@ -1,0 +1,60 @@
+# File: ex-1.mypl
+# Date: Spring 2022
+# Auth: Cameron S. Williamson
+# Desc: MyPL Sample program from Exercise set 1
+
+fun void main() {
+    var inputString = ""
+    var sum = 0
+    while true {
+        inputString = read()
+        if inputString == "-1"{print(sum)}
+        else{sum=sum+stoi(inputString)}
+    }
+}
+
+fun int fact(int n) {
+    if n<=1{return 1}else{return n*fact(n-1)}
+}
+
+fun void otherMain() {
+    var fact10 = fact(10)
+    print(fact10)
+    var fact20=fact(20)
+    print(fact20)
+}
+
+type Node {var int              val = 0
+var Node next=nil}
+
+type Stack {var Node head=nil
+var int length=0}
+
+fun void push(Stack stack,int value){var newNode = new Node
+
+newNode.val = value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+newNode.next = stack.head
+stack.head = newNode
+}
+fun void pop(Stack stack) {
+    if stack.head!=nil {var tmpHead=stack.head 
+                stack.head=stack.head.next
+delete tmpHead
+
+    }
+}

@@ -6,12 +6,11 @@
  */
 
 import java.io.InputStream;
-import java.io.File;
+import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MyPL {
 
@@ -23,6 +22,7 @@ public class MyPL {
       boolean printMode = false;
       boolean checkMode = false;
       boolean outIRMode = false;
+      boolean goMode = false;
       int argCount = args.length;
       InputStream input = System.in;
 
@@ -43,10 +43,12 @@ public class MyPL {
         checkMode = true;
       else if (argCount > 0 && args[0].equals("--ir"))
         outIRMode = true;
+      else if (argCount > 0 && args[0].equals("--go"))
+        goMode = true;
 
       // to check modes
       boolean specialMode = lexerMode || printMode || parseMode ||
-        checkMode || outIRMode;
+          checkMode || outIRMode || goMode;
 
       // check if incorrect args 
       if (argCount == 2 && !specialMode) {
@@ -55,11 +57,16 @@ public class MyPL {
       }
 
       // grab input file
-      String inFile = null;
-      if (argCount == 2)
+      OutputStream goOutputStream = null;
+      if (argCount == 2) {
         input = new FileInputStream(args[1]);
-      else if (argCount == 1 && !specialMode)
+        if (goMode)
+          goOutputStream = new FileOutputStream(args[1].replace(".mypl", ".go"));
+      } else if (argCount == 1 && !specialMode) {
         input = new FileInputStream(args[0]);
+        if (goMode)
+          goOutputStream = new FileOutputStream(args[0].replace(".mypl", ".go"));
+      }
       
       // create the lexer
       Lexer lexer = new Lexer(input);
@@ -104,6 +111,16 @@ public class MyPL {
         program.accept(genVisitor);
         System.out.println(vm);
       }
+      // Run in go code generation mode
+      else if (goMode) {
+        ASTParser parser = new ASTParser(lexer);
+        Program program = parser.parse();
+        TypeInfo typeInfo = new TypeInfo();
+        StaticChecker checkVisitor = new StaticChecker(typeInfo);
+        GoVisitor goVisitor = new GoVisitor();
+        program.accept(checkVisitor);
+        goVisitor.parse(program, goOutputStream);
+      }
       // run normally
       else {
         ASTParser parser = new ASTParser(lexer);
@@ -135,6 +152,7 @@ public class MyPL {
     System.out.println("  --print    Pretty print the program.");
     System.out.println("  --check    Statically check program.");
     System.out.println("  --ir       Print intermediate code.");
+    System.out.println("  --go       Generate Go code.");
   }
   
 }

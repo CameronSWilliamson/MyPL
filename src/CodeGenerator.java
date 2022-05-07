@@ -88,13 +88,6 @@ public class CodeGenerator implements Visitor {
   }
 
   public void visit(FunDecl node) throws MyPLException {
-    // TODO:
-    // 1. create a new frame for the function
-    // 2. create a variable mapping for the frame
-    // 3. store args
-    // 4. visit statement nodes
-    // 5. check to see if the last statement was a return (if not, add
-    // return nil)
     VMFrame functionFrame = new VMFrame(node.funName.lexeme(), node.params.size());
     currFrame = functionFrame;
     varMap = new HashMap<>();
@@ -152,6 +145,7 @@ public class CodeGenerator implements Visitor {
 
     if (node.lvalue.size() > 2) {
       varName = node.lvalue.get(i).lexeme();
+      // currFrame.instructions.add(VMInstr.DUP());
       currFrame.instructions.add(VMInstr.SETFLD(varName));
     }
   }
@@ -322,7 +316,6 @@ public class CodeGenerator implements Visitor {
   }
 
   public void visit(NewRValue node) throws MyPLException {
-    // TODO
     // Set<String> components = typeInfo.components(node.typeName.toString());
     String typeName = node.typeName.lexeme();
     List<String> components = new ArrayList<>(typeInfo.components(typeName));
