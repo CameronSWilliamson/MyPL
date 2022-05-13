@@ -7,7 +7,7 @@
   <p align="center">
     Programming language built using a JVM-like interpreter. This language also has the ability to be transpiled to go to improve performance.
     <br />
-    <a href="https://github.com/CameronSWilliamson/MyPL">View Demo</a>
+    <a href="https://github.com/CameronSWilliamson/MyPL/blob/main/docs/MyPL.md">View Language Docs</a>
     ·
     <a href="https://github.com/CameronSWilliamson/MyPL/issues">Report Bug</a>
     ·
@@ -38,7 +38,7 @@ This project was tested using both `GoVisitorTest.java` and using the files stor
 
 ## Built With
 
-* Java
+* [Java](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 * [Bazel](https://bazel.build/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
