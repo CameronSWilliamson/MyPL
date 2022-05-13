@@ -46,6 +46,21 @@ This project was tested using both `GoVisitorTest.java` and using the files stor
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+You can compile the compiler using the `bazel build //:mypl` command from the commandline from the project directory.
+
+
+### MyPL
+
+To execute MyPL code using the native compiler, run 
+
+```
+bazel-bin/mypl [filename]
+```
+
+from the project directory.
+
+### Go Transpiler
+
 To transpile MyPL code into go code run the following:
 
 ```
